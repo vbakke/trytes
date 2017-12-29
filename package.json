@@ -1,0 +1,32 @@
+{
+  "name": "trytes",
+  "version": "1.0.0",
+  "description": "Conversion of trytes,  bytes and text",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vbakke/trytes.git"
+  },
+  "keywords": [
+    "tryte",
+    "trytes",
+    "iota",
+    "conversion"
+  ],
+  "author": "vbakke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vbakke/trytes/issues"
+  },
+  "homepage": "https://github.com/vbakke/trytes#readme",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0"
+  }
+}

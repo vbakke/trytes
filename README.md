@@ -2,8 +2,9 @@
 This prject is currently discussing how to convert between trytes and bytes in a good way, that may be implemented in most programming languages. 
 
 
-Currently this project does not contain any code.\
-That might change. 
+Currently this project does ~~not~~ contain any code.\
+~~That might change.~~  Just added a JavaScript example for encoding/deconding 'tryte strings' as bytes.\
+Encoding Unicode strings to tryte strings is on the roadmap.
 
 # What's a tryte?
 Some treat 3 trits as a tryte.\
