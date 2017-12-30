@@ -27,6 +27,79 @@ const TRYTE_CHARS = '9ABCDEFGHIJKLMNOPQRSTUVWXYZ';         // All legal tryte3 c
 const POWEROF3 = [1, 3, 9, 27, 3 * 27, 9 * 27, 27 * 27];   // Pre calculated 3^i
 
 
+
+
+/**
+ * Encode bytes as tryte6 characters in a string
+ * 
+ * With some minor adjustments, it is basically a copy of:
+ *    iota.lib.js asciiToTrytes.js toTrytes()
+ * 
+ * Not to be confused with decodeTryteStringFromBytes().
+ * 
+ * @param {*} bytes Array of bytes, or a string of one-byte chars (e.g. [250, 16])
+ * 
+ * @returns a tryte6 string (having 2 tryte chars representing each byte)
+ */
+function encodeBytesAsTryteString(bytes) {
+    var trytes = "";
+
+    for (var i = 0; i < bytes.length; i++) {
+        var value = bytes[i];
+
+        // If outside bounderies of a byte, return null
+        if (value > 255) {
+            return null;
+        }
+
+        var firstValue = value % 27;
+        var secondValue = (value - firstValue) / 27;
+
+        var trytesValue = TRYTE_CHARS[firstValue] + TRYTE_CHARS[secondValue];
+
+        trytes += trytesValue;
+    }
+
+    return trytes;
+}
+
+
+/**
+ * Decode a tryte6 string back to ts original bytes
+ * 
+ * With some minor adjustments, it is basically a copy of:
+ *    iota.lib.js asciiToTrytes.js fromTrytes()
+ * 
+ * Not to be confused with encodeTryteStringAsBytes().
+ * 
+ * @param {*} inputTrytes a tryte6 string (having 2 tryte3 chars representing a byte)
+ * 
+ * @returns an array of the original bytes
+ */
+function decodeBytesFromTryteString(inputTrytes) {
+    // If input is not a string, return null
+    if ( typeof inputTrytes !== 'string' ) return null
+    
+    // If input length is odd, return null
+    if ( inputTrytes.length % 2 ) return null
+    
+    let bytes = [];
+
+    for (var i = 0; i < inputTrytes.length; i += 2) {
+        // get a trytes pair
+        var trytes = inputTrytes[i] + inputTrytes[i + 1];
+
+        var firstValue = TRYTE_CHARS.indexOf(trytes[0]);
+        var secondValue = TRYTE_CHARS.indexOf(trytes[1]);
+
+        var value = firstValue + secondValue * 27;
+        bytes.push(value);
+    }
+
+    return bytes;
+}
+
+
 /**
  * Encode tryte3 strings (e.g. 'KB9Z') to array of bytes, Uint8Array.
  * 
@@ -38,7 +111,10 @@ const POWEROF3 = [1, 3, 9, 27, 3 * 27, 9 * 27, 27 * 27];   // Pre calculated 3^i
  * Last byte may contain a padding code, to indicate if and how many tryte3s should be removed,
  * when decoding back to original form.
  * 
+ * Not to be confused with decodeBytesFromTryteString().
+ * 
  * @param {*} tryte3Str, texts tring with tryte chars (9 + A-Z), such as an IOTA seed, address, etc.
+ * 
  * @returns Uint8Array A representation of the trytes, stored within an 8-bit byte.
  */
 function encodeTryteStringAsBytes(tryte3Str) {
@@ -57,7 +133,10 @@ function encodeTryteStringAsBytes(tryte3Str) {
  *  - then converted from tryte3 to a tryte character (9 + A-Z)
  * The last byte may contain a flag for removing some trailing zero values (or '9' characters).
  * 
+ * Not to be confused with encodeBytesAsTryteString().
+ * 
  * @param {*} bytes Array of values from 0-242
+ * 
  * @returns A tryte3 string, containing only characters (9 + A-Z)
  */
 function decodeTryteStringFromBytes(bytes) {
@@ -174,6 +253,8 @@ function convertTryte3ValuesToChars(tryte3Values) {
 }
 
 module.exports = {
+    encodeBytesAsTryteString,
+    decodeBytesFromTryteString,
     encodeTryteStringAsBytes,
     decodeTryteStringFromBytes,
 };
