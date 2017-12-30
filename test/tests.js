@@ -1,8 +1,6 @@
 var chai = require('chai');
 var assert = chai.assert;
-var Trytes = require('../src/trytes.js');
-
-Trytes.decodeTryteStringFromBytes('KB');
+var Trytes = require('../index.js');
 
 
 describe('Various lengths of Z trytes', function () {
@@ -13,11 +11,13 @@ describe('Various lengths of Z trytes', function () {
             var trytes = str.substr(0, i);
             var bytes = Trytes.encodeTryteStringAsBytes(trytes);
             var reverted = Trytes.decodeTryteStringFromBytes(bytes);
-            //console.log('Converted '+trytes+'-'+reverted+', via '+bytes.toString());
+            console.log('Converted '+trytes+'-'+reverted+', via '+bytes.toString());
             assert.equal(trytes, reverted);
         }
     });
 });
+
+
 
 describe('Various length of 9 trytes', function () {
     it('should convert tryte strings of 0 to 6, to byte and back', function () {
@@ -27,11 +27,13 @@ describe('Various length of 9 trytes', function () {
             var trytes = str.substr(0, i);
             var bytes = Trytes.encodeTryteStringAsBytes(trytes);
             var reverted = Trytes.decodeTryteStringFromBytes(bytes);
-            //console.log('Converted '+trytes+'-'+reverted+', via '+bytes.toString());
+            console.log('Converted '+trytes+'-'+reverted+', via '+bytes.toString());
             assert.equal(trytes, reverted);
         }
     });
 });
+
+
 
 describe('Encode and decode seeds and addresses', function () {
     let testTrytes = [

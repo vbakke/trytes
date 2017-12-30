@@ -134,6 +134,14 @@ function _shiftTrytes(fromArray, sizeFrom, sizeTo) {
 }
 
 
+/**
+ * Convert a tryte string (9+A-Z), to an array of tryte3 values (0-26)
+ * 
+ * @param {*} tryte3Str a tryte string, e.g. "KB0Z"
+ * 
+ * @returns  Array of tryte3 valules, e.g. [11, 2, 0, 26]
+ *
+ */
 function convertTryte3CharsToValues(tryte3Str) {
     let tryte3Values = new Array(tryte3Str.length);
     for (let i = 0; i < tryte3Str.length; i++) {
@@ -144,6 +152,15 @@ function convertTryte3CharsToValues(tryte3Str) {
     }
     return tryte3Values;
 }
+
+/**
+ * Convert an array of tryte3 values (0-26) to a tryte string (9+A-Z)
+ * 
+ * @param {*} tryte3Values Array of tryte3 valules, e.g. [11, 2, 0, 26]
+ * 
+ * @returns a tryte string, e.g. "KB0Z"
+ * 
+ */
 function convertTryte3ValuesToChars(tryte3Values) {
     let tryte3Str = "";
     let value = 0;
