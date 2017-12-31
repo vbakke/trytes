@@ -44,7 +44,7 @@ describe('Encode and decode seeds and addresses', function () {
         'A9TEST9SEED99RMDKUTQVGFMYPYGAQVOTGJCEFIEELKHRBCZYKAOQQWFRYNGYDAEIKTHQJINZDPYNYOS9',
         'A9TEST9ADDRESS99BTFKEHPQNGELDPWJSZCLRKU9EAIMDLNCOAIEI9JISIPWTSFUWIUCFWYXNUEPVAESHEQPKIHHNB'];
 
-    it('should convert tryte strings of 1 to 6, to byte and back', function () {
+    it('should convert tryte strings to byte and back', function () {
 
         for (var i = 0; i < testTrytes.length; i++) {
             var trytes = testTrytes[i];
@@ -55,3 +55,5 @@ describe('Encode and decode seeds and addresses', function () {
         }
     });
 });
+
+

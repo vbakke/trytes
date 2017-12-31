@@ -2,17 +2,18 @@
 This project is currently discussing how to convert between trytes and bytes in a good way, that may be implemented in most programming languages. 
 
 
-Currently this project does ~~not contain any~~ code for encoding trytes and bytes.\
+Currently this project ~~does not contain any~~ has now code for encoding trytes and bytes.\
 ~~That might change.~~  
 
 It contains a JavaScript example for:
 * encoding/decoding 'tryte3 strings' as bytes
 * encoding/decoding bytes as 'tryte6 strings' (Why is this not the same? See below.)
+* encoding/decoding unicode text as 'tryte6 strings'
 
 Encoding Unicode strings to tryte strings is on the roadmap.
 
 # What's a tryte?
-People don't agree.
+People don't agree.\
 Some treat 3 trits as a tryte.\
 Some treat 5 trits as a tryte.\
 Some treat 6 trits as a tryte.\
@@ -50,3 +51,5 @@ If your native form is bytes, use `encodeBytesAsTryteString()` and `decodeBytesF
 Feel free to suggest better names. 
 
 Read the [wiki](https://github.com/vbakke/trytes/wiki) and the [issues](https://github.com/vbakke/trytes/issues) for more info.
+
+

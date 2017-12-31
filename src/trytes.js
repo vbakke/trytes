@@ -27,6 +27,16 @@ const TRYTE_CHARS = '9ABCDEFGHIJKLMNOPQRSTUVWXYZ';         // All legal tryte3 c
 const POWEROF3 = [1, 3, 9, 27, 3 * 27, 9 * 27, 27 * 27];   // Pre calculated 3^i
 
 
+const encodingMap_Buffer = {
+    'utf8': 'utf8',
+    'utf16': 'utf16le',
+    'ansi': 'latin1',
+};
+const TRYTE_BOM = {
+    'YZ': 'utf16le',
+    'ZY': 'utf16be',
+    'YY': 'utf8',
+}
 
 
 /**
@@ -78,11 +88,11 @@ function encodeBytesAsTryteString(bytes) {
  */
 function decodeBytesFromTryteString(inputTrytes) {
     // If input is not a string, return null
-    if ( typeof inputTrytes !== 'string' ) return null
-    
+    if (typeof inputTrytes !== 'string') return null
+
     // If input length is odd, return null
-    if ( inputTrytes.length % 2 ) return null
-    
+    if (inputTrytes.length % 2) return null
+
     let bytes = [];
 
     for (var i = 0; i < inputTrytes.length; i += 2) {
@@ -146,6 +156,98 @@ function decodeTryteStringFromBytes(bytes) {
     return tryte3Str;
 }
 
+
+
+/**
+ * Encode any (unicode) text string as a tryte string.
+ * 
+ * The 'encoding' is optional, and is encouraged to be left blank.
+ * The default encoding will be chosen to create the shortest tryte string.
+ *  - all characters below 128: latin1, without BOM
+ *  - more than half of chars in \u0800-\uFFFF: utf16le, include BOM YZ
+ *  - else: utf8, include BOM YY
+ * 
+ * Discussion point: BOM 
+ * The BOM could be solved using proper Unicode byte-order-mark FEFF, but that would require 6 tryte characters.
+ * The BOM has been solved using 
+ *     YZ, ZY and YY, 
+ * for UTF-16 LE, UTF-16 BE, UTF-8, respectively. 
+ * 
+ * 
+ * @param {*} text The string to encode
+ * @param {*} encoding Optional, may contain the Buffer() encodings 'latin1', 'utf8' or 'utf16le'
+ * 
+ * @returns A tryte3 string, containing only characters (9 + A-Z)
+ */
+function encodeTextAsTryteString(text, encoding) {
+    if (typeof encoding === 'undefined') {
+        encoding = selectBestEncoding(text);
+    }
+
+    let bytes = encodeTextAsBytes(text, encoding);
+    let tryte3Str = encodeBytesAsTryteString(bytes);
+
+    let bom = getKeyByValue(TRYTE_BOM, encoding);
+    if (bom)
+        tryte3Str = bom + tryte3Str;
+
+    return tryte3Str;
+}
+
+
+/**
+ * Decodes a tryte3 string into a normal JavaScript Unicode string.
+ * 
+ * As long as the tryte string constain the BOM, there is no need to use 'encoding'.
+ * 
+ * @param {*} tryte3Str The tryte3 string 
+ * @param {*} encoding Optional
+ */
+function decodeTextFromTryteString(tryte3Str, encoding) {
+    // Check if BOM exists
+    let bom = tryte3Str.substr(0, 2);
+    if (bom in TRYTE_BOM) {
+        // Remove bom from tryte string
+        tryte3Str = tryte3Str.substr(2);
+
+        // FIXME: What should take precedence? Given encoding argument, or given BOM in data?
+        if (typeof encoding === 'undefined') {
+            encoding = TRYTE_BOM[bom];
+        }
+    }
+    if (typeof encoding === 'undefined') {
+        // If no BOM is found, decode as it it was a one byte characterset
+        encoding = 'latin1';
+    }
+
+    let bytes = decodeBytesFromTryteString(tryte3Str);
+    let text = decodeTextFromBytes(bytes, encoding);
+    return text;
+}
+
+
+
+function encodeTextAsBytes(text, encoding) {
+    if (typeof encoding === 'undefined') {
+        encoding = selectBestEncoding(text);
+    }
+
+    // IF NodeJS:
+    let bytes = Buffer.from(text, encoding);
+    // IF browser
+    // let bytes = TextDecoder(....)
+
+    return bytes;
+}
+
+function decodeTextFromBytes(bytes, encoding) {
+    // IF NodeJS:
+    let text = Buffer.from(bytes).toString(encoding);
+    // IF browser
+    //let text = TextDecoder(...)
+
+    return text;
+}
 
 
 
@@ -252,9 +354,60 @@ function convertTryte3ValuesToChars(tryte3Values) {
     return tryte3Str;
 }
 
+
+
+/**
+ * Select encoding based on the given text
+ * 
+ * Ascii characters only, yields 'latin1', otherwise utf8 provides the shortest encoding.
+ * 
+ * Except, if the unicode string has more than half of the Upper Basic Multilingual Plane
+ * from \u0800 to \uFFFF, since these use more bytes in UTF-8 than in UTF-16.
+ * 
+ * @param {*} text 
+ * 
+ * @returns 'latin1', 'utf8' or 'utf16le'
+ */
+function selectBestEncoding(text) {
+    if (containsAsciiOnly(text)) {
+        return 'latin1';
+    }
+    else if (countUnicodeUperBMP(text) <= text.length / 2) {
+        return 'utf8';
+    }
+    else {
+        return 'utf16le';
+    }
+
+}
+
+function containsAsciiOnly(text) {
+    for (let i = 0; i < text.length; i++) {
+        if (text.charCodeAt(i) > 127)
+        return false;
+    }
+    return true;
+}
+
+function countUnicodeUperBMP(text) {
+    let count = 0;
+    for (let i=0; i<text.length; i++) {
+        let charCode = text.charCodeAt(i);
+        if (charCode >= 0x0800 && charCode < 0x10000)
+            count++;
+    }
+    return count;
+}
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+}
+
 module.exports = {
     encodeBytesAsTryteString,
     decodeBytesFromTryteString,
     encodeTryteStringAsBytes,
     decodeTryteStringFromBytes,
+    encodeTextAsTryteString,
+    decodeTextFromTryteString,
 };
