@@ -297,15 +297,12 @@ function _shiftTrytes(fromArray, sizeFrom, sizeTo) {
     if (sizeTo > sizeFrom) {
         // If going up in size, a padding code may be added at the end
         if (trits < 0) {
-            toArray.push(Math.floor(trits / sizeFrom));
+            toArray.push(POWEROF3[sizeTo] - Math.floor(trits / sizeFrom));
         }
     } else {
         // When going down in size, check if any padding characters should be removed
         if (padding != 0) {
-            let minus1 = fromArray.slice(-1); // Get -1 in the same type as fromArray (i.e. 255 for UINT8)
-            minus1[0] = -1;
-
-            let skip = minus1[0] - padding + 1;
+            let skip = padding - POWEROF3[sizeFrom];
             //console.log("skip last ", (skip), "chars");
             toArray = toArray.slice(0, -skip);
         }

@@ -47,13 +47,11 @@ describe('Encode and decode Unicode strings to tryte', function () {
 
     tests.forEach(function (test) {
         var encodings = test.encoding || [undefined];
-        console.log(encodings);
         var expectedTrytes = test.expected;
-        console.log(encodings);
+        
         if (typeof encodings === 'string') encodings = [encodings];
         if (typeof expectedTrytes === 'string') expectedTrytes = [expectedTrytes];
-        console.log(encodings);
-
+        
 
         for (var i = 0; i < expectedTrytes.length; i++) {
             let encoding = encodings[Math.min(i, encodings.length-1)];
