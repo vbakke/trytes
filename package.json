@@ -1,6 +1,6 @@
 {
   "name": "trytes",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Conversion of trytes,  bytes and text",
   "main": "index.js",
   "directories": {
