@@ -10,6 +10,8 @@ It contains a JavaScript example for:
 * encoding/decoding bytes as 'tryte6 strings' (Why is this not the same? See below.)
 * encoding/decoding unicode text as 'tryte6 strings'
 
+Live demo can be seen on [[https://vbakke.github.io/trytes/]].
+
 # What's a tryte?
 People don't agree.\
 Some treat 3 trits as a tryte.\
